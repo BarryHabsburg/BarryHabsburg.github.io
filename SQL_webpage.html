@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SAS SQL Code Review</title>
+    <style>
+        @import "https://cdn.rawgit.com/google/code-prettify/master/styles/desert.css";
+        $lightGray: #fafafa;
+        $medBlue: #9baecf;
+        $char: #292929;
+
+        body {
+        width: 50%;
+        margin: 0 auto;
+        @media (max-width: 650px) {
+            width: 75%;
+        }
+        @media (max-width: 430px) {
+            width: 100%;
+        }
+        }
+
+        code,
+        .code,
+        pre {
+        font-family: 'Source Code Pro';
+        background: $char;
+        color: $lightGray;
+        font-size: 16px;
+        padding: 0;
+        padding: 10px;
+        &:before {
+        display: block;
+        width: calc(100%);
+        margin-left: -3px;
+        margin-top: -3px;
+        padding: 3px;
+        text-transform: uppercase;
+        content: attr(data-lang);
+        background: $medBlue;
+        }
+        .o {
+        color: orange;
+        }
+        .w {
+        color: white;
+        }
+        }
+
+    </style>
+  </head>
+  <body>
+    <h1>SAS SQL Code Review</h1>
+    <p style="font-family: times new roman; text-align: justify;">Anatomy of A PROC SQL Statement</p>
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+                Proc SQL;
+                    SELECT column list
+                    FROM   table list
+                    WHERE condition list
+                    GROUP BY column list
+                    ORDER BY column list
+                    ;
+                QUIT;
+    </pre></code>
+
+ <p style="font-family: times new roman; text-align: justify;">Assuming you already created a library; one can use PROC SQL to access said library with the following code:</p>
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc SQL;
+            SELECT * FROM MYSASLIB.SOMEDATA
+            ;
+        QUIT;
+    </pre></code>
+
+ <p style="font-family: times new roman; text-align: justify;">We can order the SOMEDATA dataset by ID:</p>
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc SQL;
+            SELECT * FROM MYSASLIB.SOMEDATA
+            ORDER by ID
+            ;
+        QUIT;
+    </pre></code>
+
+ <p style="font-family: times new roman; text-align: justify;">The <code>ORDER</code> statement can also order a dataset with string objects; in example, we have a dataset named CARS, we can sort the cars by their respective brands with the following code:</p>
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc SQL;
+            SELECT * FROM MYSASLIB.CARS
+            ORDER by BRAND
+            ;
+        QUIT;
+    </pre></code>
+
+ <p style="font-family: times new roman; text-align: justify; ">Note: "*" indicates to select all variables from data set.</p>
+ <p style="font-family: times new roman; text-align: justify; ">Note: No semi colon until the end of the SQL statement.</p>
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc SQL;
+            SELECT * FROM MYSASLIB.SOMEDATA
+            ORDER by ID DESC
+            ;
+        QUIT;
+    </pre></code>
+
+ <p style="font-family: times new roman; text-align: justify;">To change the order use, one can include <code>DESC</code> keyword to make it descending.</p>
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc SQL;
+            SELECT * FROM MYSASLIB.SOMEDATA
+            WHERE GENDER contains "Female"
+            ORDER by ID
+            ;
+        QUIT;
+    </pre></code>
+
+ <p>Note: For a numeric variable use <font color="#e22b19">WHERE AGE LT 12;</font>.</p>
+
+ <p style="font-family: times new roman; text-align: justify;">Limit Variables Output:</p>
+ 
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc SQL;
+            SELECT ID,GP,AGE FROM MYSASLIB.SOMEDATA
+            WHERE GENDER contains "Female"
+            ORDER by ID
+            ;
+        QUIT;
+    </pre></code>
+ 
+ <p style="font-family: times new roman; text-align: justify;">Note: <u>Separate variables names with commas</u> (not the same format as in most SAS statements).</p>
+ <p style="font-family: times new roman; text-align: justify;">Recode a variable using CASE.</p>
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc SQL;
+            SELECT ID,GP,AGE,GENDER,
+            CASE GP
+                WHEN "A" then "TRT 1"
+                WHEN "B" then "TRT 2"
+                ELSE "CONTROL"
+            End as TREATMENT
+                from MYSASLIB.SOMEDATA
+            ORDER by ID
+            ;
+        QUIT;
+    </pre></code>
+
+ <p style="font-family: times new roman; text-align: justify;">Note comma after "GENDER", since creating a new variable <code>TREATMENT</code>.</p>
+ <p style="font-family: times new roman; text-align: justify;">The new variable is named <code>TREATMENT</code>.</p>
+ 
+  <p style="font-family: times new roman; text-align: justify;">Recoding a numeric Variable.</p>
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc SQL;
+            SELECT *,
+            CASE
+                WHEN AGE <= THEN "KID"
+                ELSE "TEEN"
+            End as TREATMENT
+                from MYSASLIB.SOMEDATA
+            ;
+        QUIT;
+    </pre></code>
+
+ <p style="font-family: times new roman; text-align: justify;">The comma after "SELECT *" is place there, since creating a new variable. This result in all variables (*) plus the new variable</p>
+ <p style="font-family: times new roman; text-align: justify;">The new variable is named <code>STATUS</code>.</p>
+
+ <p style="font-family: times new roman; text-align: justify;">Create a New Table (a new data set)</p>
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc SQL;
+            CREATE TABLE MYSASLIB.FEMALES AS
+                SELECT ID,GP,AGE from MYSASLIB.SOMEDATA
+                WHERE GENDER CONTAINS "Female"
+                ORDER by ID
+            ;
+        QUIT;
+    </pre></code>
+
+ <p style="font-family: times new roman; text-align: justify;">A <code>TABLE</code> in SQL is the same as a SAS data set.Use <code>CREATE TABLE</code> to create a new data set.</p>
+ <p style="font-family: times new roman; text-align: justify;">See SAS Log for results - when you create a table, it is not displayed in the viewer.</p>
+ <p style="font-family: times new roman; text-align: justify;"><font color="#e22b19"><code>CREATE</code> goes before the <code>SELECT</code> - creates SAS data set, <u>no table displayed</u>.</font></p>
+ <p style="font-family: times new roman; text-align: justify;"><font color="#e22b19">From SAS LOG:</font> NOTE: Table <code>WORK.FEMALES</code> created, with 30 rows and 3 columns.</p>
+
+ <p style="font-family: times new roman; text-align: justify;">Creating a View.</p>
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc SQL;
+            CREATE View MYSASLIB.FEMALES2 AS
+                SELECT ID,GP,AGE from MYSASLIB.SOMEDATA
+                WHERE GENDER CONTAINS "Female"
+                ORDER by ID
+            ;
+        QUIT;
+    </pre></code>
+
+ <p style="font-family: times new roman; text-align: justify;">Note this one is named <code>FEMALES2</code></p>
+ <p style="font-family: times new roman; text-align: justify;">Note: SQL view MYSASLIB.FEMALES2 has been defined.</p>
+ <p style="font-family: times new roman; text-align: justify;">Use <code>VIEW</code> in a PROC - creates table from query as data for PROC:</p>
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc PRINT LABEL data=MYSASLIB.females2;
+        RUN;
+    </pre></code>
+
+ <p style="font-family: times new roman; text-align: justify;">Select Distinct Observations</p>
+ <p style="font-family: times new roman; text-align: justify;">To select distinct records from a data set.</p>
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc SQL;
+            SELECT DISTINCT SUBJECT
+            FROM MYSASLIB.COMPILATIONS;
+        QUIT;
+    </pre></code>
+
+ <p style="font-family: times new roman; text-align: justify;">Do a Simple Calculation</p>
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Data ROOMSIZE;
+            INPUT ROOM $ WIDTH LENGTH @@;
+            DATALINES;
+            LIVING   14 22 DINING   14 12 BREAKFAST 10 12
+            KITCHEN  12 16 BEDROOM1 18 12 BEDROOM2  12 14
+            BEDROOM3 13 16 BATH1     8 12 BATH2      7 10
+            BATH3     6  8 GARAGE   23 24 
+            ;
+        RUN;
+
+        Proc SQL;
+            SELECT *,
+                ROUND(WIDTH*LENGTH, 0.01) FORMAT=6.2 AS AREA
+                FROM ROOMSIZE
+        QUIT;
+    </pre></code>
+
+ <p style="font-family: times new roman; text-align: justify;">More calculations...Grouped</p>
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc SQL;
+            CREATE TABLE TIMEADJ AS 
+            SELECT GP,COUNT(GP) AS N,TIME1,TIME2,MAX(TIME1) FORMAT=6.2 AS TIME1MAX,
+            ROUND(TIME2/(CALCULATED TIME1MAX)*100,0.01)
+            FORMAT=6.2 AS TIME2ADJ
+            FROM MYSASLIB.SOMEDATA
+            GROUP BY GP;
+        QUIT;
+
+        PROC SQL; SELECT * FROM TIMEADJ; QUIT;
+    </pre></code>
+
+ <p style="font-family: times new roman; text-align: justify;">Note there are THREE variables created by calculation by calculation - N, TIME1MAX and TIME2ADJ</p>
+ <p style="font-family: times new roman; text-align: justify;">Use this PROC SQL to view the table just created.</p>
+
+ <p style="font-family: times new roman; text-align: justify;">Calculation, Summary Values</p>
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc SQL;
+            CREATE TABLE MEANTIME AS 
+            SELECT COUNT(*) AS N,
+                ROUND(MEAN(TIME1),0.01) FORMAT=6.2 AS TIME1MEAN,
+                ROUND(MEAN(TIME2),0.01) FORMAT=6.2 AS TIME1MEAN
+            FROM MYSASLIB.SOMEDATA;
+        QUIT;
+
+        PROC SQL; SELECT * FROM TIMEADJ; QUIT;
+    </pre></code>
+
+ <p style="font-family: times new roman; text-align: justify;"><font color="#e22b19">Note: No GROUP STATEMENT...</font></p>
+
+ <p style="font-family: times new roman; text-align: justify;">SQL Join Cheat Sheet: <a href="https://www.datacamp.com/cheat-sheet/sql-joins-cheat-sheet">SQL Joins Cheat Sheet</a>
+    </p>
+
+ <center><iframe src="SQL_Joins_Cheat_Sheet.pdf" height="800" width="1500"></iframe></center>
+
+ <p style="font-family: times new roman; text-align: justify;">Bacis SQL Operators for Combining Data Sets</p>
+
+ <p style="font-family: times new roman; text-align: justify;">Combine two or more queries in various ways by using the following set operators (there are more than these):</p>
+
+ <!-- CSS Code: Place this code in the document's head (between the 'head' tags) -->
+ <style>
+    table.GeneratedTable {
+      width: 100%;
+      background-color: #ffffff;
+      border-collapse: collapse;
+      border-width: 2px;
+      border-color: #ffcc00;
+      border-style: solid;
+      color: #000000;
+    }
+    
+    table.GeneratedTable td, table.GeneratedTable th {
+      border-width: 2px;
+      border-color: #ffcc00;
+      border-style: solid;
+      padding: 3px;
+    }
+    
+    table.GeneratedTable thead {
+      background-color: #ffcc00;
+    }
+ </style>
+    
+    <center>
+    <table class="GeneratedTable" style="width: 50%;">
+      <thead>
+        <tr>
+          <th>Operators</th>
+          <th>Descriptions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Union</td>
+          <td>produces all <font color="#e22b19">unique</font> rows from both queries.</td>
+        </tr>
+        <tr>
+          <td>Except</td>
+          <td>produces rows that are part of the first query only.</td>
+        </tr>
+        <tr>
+          <td>Intersect</td>
+          <td>produces rows that are common to both query results.</td>
+        </tr>
+        <tr>
+            <td>Outer Union</td>
+            <td>concatenates the query results.</td>
+        </tr>
+      </tbody>
+    </table>
+    </center>
+    
+ <p style="font-family: times new roman; text-align: justify;">Duplicate records</p>
+    
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        DATA OLD1;                                    
+        INPUT SUBJ $ AGE YRS_SMOKE;
+        datalines;
+        001 34 12
+        003 44 14
+        004 55 35
+        006 21 3
+        011 33 11
+        ;
+        RUN;
+    </pre></code>
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        DATA OLD1;                                    
+        INPUT SUBJ $ AGE YRS_SMOKE MARRIED;
+        datalines;
+        006 21 12 .
+        011 33 11 1
+        012 25 19 0
+        023 65 45 1
+        032 71 55 1
+        ;
+        RUN;
+    </pre></code>
+
+ <p style="font-family: times new roman; text-align: justify;">Union appends, keeps unique rows</p>
+    
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc SQL;
+            SELECT * FROM OLD1
+            UNION
+            SELECT * FROM OLD2
+            ;
+        QUIT;
+    </pre></code>
+
+ <p style="font-family: times new roman; text-align: justify;"><font color="#e22b19">This is the same code from before - only difference is the duplicated records in the data sets. One row 6 is unique. Two row 11's are unique. (UNION keeps all unique.)</font></p>
+
+
+ <p style="font-family: times new roman; text-align: justify;">Union all keeps all rows</p>
+    
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc SQL;
+            SELECT * FROM OLD1
+            UNION ALL
+            SELECT * FROM OLD2
+            ;
+        QUIT;
+    </pre></code>
+
+ <p style="font-family: times new roman; text-align: justify;">Except only keeps the data from the first data set that are not in the 2nd data set (but all column variables are used)</p>
+    
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc SQL;
+            SELECT * FROM OLD1
+            EXCEPT
+            SELECT * FROM OLD2
+            ;
+        QUIT;
+    </pre></code>
+
+ <p style="font-family: times new roman; text-align: justify;"><font color="#e22b19">Suppose there was a duplicate record 006 in the first data set;</font> using <code>EXCEPT</code> record 6 <u>would not appear in the result because there is a record 6 in the second data set.</u> If you want a duplicate record that is not a duplicate matched in the 2nd data set to appear in the result, use <code>EXCEPT ALL</code>.</p>
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc SQL;
+            SELECT * FROM OLD1
+            EXCEPT ALL
+            SELECT * FROM OLD2
+            ;
+        QUIT;
+    </pre></code>
+
+ <p style="font-family: times new roman; text-align: justify;">The <code>INTERSECT</code> command returns only those records that occur in both data sets.</p>
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc SQL;
+            SELECT * FROM OLD1
+            INTERSECT
+            SELECT * FROM OLD2
+            ;
+        QUIT;
+    </pre></code>
+
+ <p style="font-family: times new roman; text-align: justify;">Compare Union with Outer Union</p>
+ <p style="font-family: times new roman; text-align: justify;">Union: produces all unique rows from both queries.</p>
+ <p style="font-family: times new roman; text-align: justify;">Outer Union: concatenates the series results.</p>
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc SQL;
+            SELECT * FROM OLD1
+            OUTER UNION
+            SELECT * FROM OLD2
+            ;
+        QUIT;
+    </pre></code>
+ 
+ <p style="font-family: times new roman; text-align: justify;">Outer Union: concatenates the series results.<br/>Note: <b>SQL allows DUPLICATE variables names in VIEW but not in CREATE TABLE.</b></p>
+ 
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc SQL;
+        CREATE TABLE TMP AS
+            SELECT * FROM OLD1
+            OUTER UNION
+            SELECT * FROM OLD2
+            ;
+        QUIT;
+    </pre></code>
+ 
+ <p style="font-family: times new roman; text-align: justify;"><code>CREATE TABLE</code> cannot handle duplicate variables: i.e.<br/><font color="#008B00">WARNING: VARIABLE SUBJ already exists on file WORK.TMP</font>.</p>
+
+ <p style="font-family: times new roman; text-align: justify;">Using SQL Table Aliases</p>
+ <p style="font-family: times new roman; text-align: justify;">SQL aliases are used to give a database table or a column in a table, a temporary name -- to make column names more readable. SQL aliases can be useful when handling 2 or more tables. <font color="#e22b19">Table Alias</font> allows one to create distinctions amongst the variables from different tables, so to better distinguish said variables without ambiguity.</p>
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc SQL;
+            SELECT a.subj,a.age,b.subj,b.age,b.married as married
+            FROM OLD1 a, OLD2 b,
+            WHERE a.subj=b.subj;
+            ;
+        QUIT;
+    </pre></code>
+
+ <p style="font-family: times new roman; text-align: justify;">In an <code>INNER JOIN</code>, only keeps observations with <font color="#e22b19">both key values</font> that match in the selected variable, or variables.</p>
+
+ <p style="font-family: times new roman; text-align: justify;">Using the table names as the alias.</p>
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc SQL;
+            SELECT *
+            FROM OLD1, OLD2,
+            WHERE old1.subj=old2.subject;
+            ;
+        QUIT;
+    </pre></code>
+
+ <p style="font-family: times new roman; text-align: justify;">Add the phrase "order by old1.subj" to put the table in Subject Order. (WHERE DOES THE ORDER STATEMENT GO?)</p>
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc SQL;
+            SELECT *
+            FROM OLD1, OLD2,
+            WHERE old1.subj=old2.subject;
+            ORDER by old1.subj
+            ;
+        QUIT;
+    </pre></code>
+
+ <p style="font-family: times new roman; text-align: justify;">One to Many Merge</p>
+ <p style="font-family: times new roman; text-align: justify;"><b>Suppose you have data like the following, and you want to match the building to the employees.</b></p>
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        DATA LOC;
+        INPUT BUILDING $ Location $;
+        DATALINES;
+        A1 DALLAS
+        A2 WACO
+        A3 HOUSTON
+        ;
+        RUN;
+    </pre></code>
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        DATA EMPLOYEE;
+        INPUT EID $ LOC $ ROOMNUMBER;
+        DATALINES;
+        001 A2 103
+        003 A1 100
+        005 A1 1001
+        006 A3 12
+        002 A1 101.1
+        ;
+        RUN;
+    </pre></code>
+
+
+    <code style="color: rgba(95, 139, 166, 0.97); font-family: Cambria;"><pre data-lang='scss' class='prettyprint'>
+        Proc SQL;
+            SELECT *
+            FROM LOC, EMPLOYEE
+            WHERE LOC.BUILDING=EMPLOYEE.LOC
+            ORDER by EMPLOYEE.EID
+            ;
+        QUIT;
+    </pre></code>
+
+ <p style="font-family: times new roman; text-align: justify;">Each employee is matched with matching value amongst the building and LOC variables.</p>
+
+  </body>
+</html>

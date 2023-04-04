@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta hppt-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewpoint" content="wdith=device-width, initial-scale=1.0">    
+    <meta name="dcterms.date" content="2022-07-12">
+    <meta name="description" content="Hierarchical regularization via an auxiliary variable magic trick.">
+    <title>Article 1</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/default.min.css"
+        id="theme">
+    <script>
+        window.onload = function () {
+            var code = document.getElementById("code");
+            hljs.highlightBlock(code);
+        };
+        function updateTheme(theme) {
+            document.getElementById("theme").href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/" + theme + ".min.css";
+        }
+    </script>
+    
+</head>
+<body>
+    <p style="text-align: justify;font-family: Time New Roman">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Instead of proceeding to the real-world problem, lets first address a simulated classification problem generated through pseudo-random number generation. In this simulated problem the algorithm will try to learn how to classify spiral data made up of red and purple points plot against their $(x,y)$ coordinates on a scatter plot.<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To generate the simulated data, we had to utilized the parameter form of a circle equation, where x-coordinates are mapped through $x(t)=r*cos(t)$, and the y-coordinates are mapped through $y(t)=r*sin(t)$. To generate the radius of the circle, we utilized <code>linspace()</code>, which created numpy array of four-hundred elements from $0$ to $1$. To generate variation in the spiral, a normally distributed prn algorithm, <code>np.random.randn()</code> was utilized to generate an added normal variation to each of the points angles.</p>
+    
+    <select onchange="updateTheme(this.value)">
+        <option value="default">default</option>
+        <option value="a11y-dark">a11y-dark</option>
+        <option value="atom-one-dark">atom-one-dark</option>
+        <option value="atom-one-light">atom-one-light</option>
+        <option value="rainbow">rainbow</option>
+        <option value="vs">vs</option>
+    </select>
+ 
+    <pre id="code">
+    function hello() {
+      console.log("Hello, world!");
+    }
+</pre>
+
+<pre><code>Numpy as np</code></pre>
+    
+</body>
+</html>

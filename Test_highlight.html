@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE-edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+</head>
+
+<body>
+
+    <pre>
+        <code>
+libname SASDATA '/home/u62122951/sasuser.v94/SASDATA';
+
+PROC IMPORT OUT=SASDATA.CreditCardDATA 
+        DATAFILE= "/home/u62122951/sasuser.v94/Homework/Credit_Card_Applicant_simulated_Data.csv" 
+        DBMS=CSV REPLACE;
+GETNAMES=YES;
+RUN;
+        </code>
+      </pre>
+    
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>
+        hljs.highlightAll();
+    </script>
+</body>
+</html>
